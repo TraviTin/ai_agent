@@ -39,7 +39,7 @@ def main():
 
 def generate_content(client, messages, verbose):
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001', 
+        model='gemini-2.0-flash-0s01', 
         contents= messages,
     )
     if verbose:   
