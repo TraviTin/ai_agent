@@ -1,5 +1,6 @@
-from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 import os
+
 
 
 
@@ -10,7 +11,7 @@ def print_test_result(working_dir, directory_param):
 
     print(f"Result for {header_dir_name} directory:")
 
-    result = get_files_info(working_dir, directory_param)
+    result = get_file_content(working_dir, directory_param)
 
     for line in result.split('\n'):
         print(f"    {line}")
@@ -19,8 +20,7 @@ def print_test_result(working_dir, directory_param):
 
 
 
-print_test_result("calculator", ".")
-print_test_result("calculator", "pkg")
-print_test_result("calculator", "/bin")
-print_test_result("calculator", "../")
-
+print_test_result("calculator", "main.py")
+print_test_result("calculator", "pkg/calculator.py")
+print_test_result("calculator", "/bin/cat")
+print_test_result("calculator", "pkg/does_not_exist.py")
