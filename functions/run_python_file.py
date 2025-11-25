@@ -37,12 +37,12 @@ schema_run_python_file = types.FunctionDeclaration(
         properties={
             "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="The file path of the file that needs to be ran.",
+                description="Execute Python files with optional arguments.",
                 ),
             "args": types.Schema(
                 type=types.Type.ARRAY,
                 items=types.Schema(type=types.Type.STRING),
-                description="A list of potential arguments to give the the program you are running."
+                description="A list of potential arguments to give the the program you are running. Only needed if the program requires args. "
                 )
         },
         required=["file_path"]

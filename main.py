@@ -74,8 +74,11 @@ def generate_content(client, messages, verbose):
                 raise Exception
             else:
                 function_responses.append(result.parts[0])
+                tool_response = result.parts[0].function_response.response
+                actual_output = tool_response["result"]
+                print(actual_output)
             if verbose:
-                print(f"-> {result.parts[0].function_response.response}")
+                print(f"-> {tool_response}")
     else:
         print("Response:")
         print(response.text)
