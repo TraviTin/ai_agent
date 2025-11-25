@@ -3,12 +3,13 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+
 from functions.get_files_info import schema_get_files_info, get_files_info
 from prompts import system_prompt
-from google.genai import types
 from functions.get_file_content import schema_get_file_content, get_file_content
 from functions.write_file import schema_write_file, write_file
 from functions.run_python_file import schema_run_python_file, run_python_file
+from functions.call_function import call_function
 
 def main():
     load_dotenv()
@@ -63,9 +64,18 @@ def generate_content(client, messages, verbose):
         print("Response tokens: ", response.usage_metadata.candidates_token_count)   
 
     function_calls = response.function_calls
+    function_responses = []
     if function_calls is not None:
-        for func_parts in function_calls:
-            print(f"Calling function: {func_parts.name}({func_parts.args})")
+        for function_call_part in function_calls:
+            result = call_function(function_call_part, verbose)
+            if not result.parts:
+                raise Exception
+            if not result.parts[0].function_response:
+                raise Exception
+            else:
+                function_responses.append(result.parts[0])
+            if verbose:
+                print(f"-> {result.parts[0].function_response.response}")
     else:
         print("Response:")
         print(response.text)
