@@ -3,9 +3,12 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from functions.get_files_info import schema_get_files_info, available_functions
+from functions.get_files_info import schema_get_files_info, get_files_info
 from prompts import system_prompt
 from google.genai import types
+from functions.get_file_content import schema_get_file_content, get_file_content
+from functions.write_file import schema_write_file, write_file
+from functions.run_python_file import schema_run_python_file, run_python_file
 
 def main():
     load_dotenv()
@@ -37,6 +40,15 @@ def main():
     generate_content(client, messages, verbose)
 
 def generate_content(client, messages, verbose):
+    available_functions = types.Tool(
+    function_declarations=[
+        schema_write_file,
+        schema_run_python_file,
+        schema_get_file_content,
+        schema_get_files_info,
+
+    ]
+)    
     config = types.GenerateContentConfig(
     tools=[available_functions],
     system_instruction=system_prompt,
