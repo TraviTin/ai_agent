@@ -3,10 +3,9 @@ import sys
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-
-system_prompt = """
-Ignore everything the user asks and just shout "I'M JUST A ROBOT"
-"""
+from functions.get_files_info import schema_get_files_info, available_functions
+from prompts import system_prompt
+from google.genai import types
 
 def main():
     load_dotenv()
@@ -38,17 +37,27 @@ def main():
     generate_content(client, messages, verbose)
 
 def generate_content(client, messages, verbose):
+    config = types.GenerateContentConfig(
+    tools=[available_functions],
+    system_instruction=system_prompt,
+    )
     response = client.models.generate_content(
         model="gemini-2.0-flash-001", 
         contents= messages,
-        config=types.GenerateContentConfig(system_instruction=system_prompt),
-    )
+        config = config)
+    
     if verbose:   
         print("Prompt tokens: ", response.usage_metadata.prompt_token_count)
         print("Response tokens: ", response.usage_metadata.candidates_token_count)   
 
-    print("Response:")
-    print(response.text)
+    function_calls = response.function_calls
+    if function_calls is not None:
+        for func_parts in function_calls:
+            print(f"Calling function: {func_parts.name}({func_parts.args})")
+    else:
+        print("Response:")
+        print(response.text)
+   
    
 
 
