@@ -4,24 +4,24 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+system_prompt = """
+Ignore everything the user asks and just shout "I'M JUST A ROBOT"
+"""
 
 def main():
     load_dotenv()
 
- 
-
-
     verbose = "--verbose" in sys.argv
-    args =[]
+    args = []
     for arg in sys.argv[1:]:
         if not arg.startswith("--"):
             args.append(arg)
-        if not args:
-            print("AI Code Assistant")
-            print('\nUsage: python main.py "your prompt here" [--verbose]')
-            print('Example: python main.py "How do I build a calculator app?"')
-            sys.exit(1)
 
+    if not args:
+        print("AI Code Assistant")
+        print('\nUsage: python main.py "your prompt here" [--verbose]')
+        print('Example: python main.py "How do I build a calculator app?"')
+        sys.exit(1)
 
     prompt = " ".join(args)
 
@@ -39,8 +39,9 @@ def main():
 
 def generate_content(client, messages, verbose):
     response = client.models.generate_content(
-        model='gemini-2.0-flash-0s01', 
+        model="gemini-2.0-flash-001", 
         contents= messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
     if verbose:   
         print("Prompt tokens: ", response.usage_metadata.prompt_token_count)
